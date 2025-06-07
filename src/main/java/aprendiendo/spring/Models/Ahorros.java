@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 import java.time.LocalDate;
-
+@Data
 @Entity
 public class Ahorros {
     @Id
@@ -33,45 +34,5 @@ public class Ahorros {
 
     public Ahorros() {
 
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public  String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public double getMonto() {
-        return monto;
-    }
-
-    public void setMonto( double monto) {
-        this.monto = monto;
-    }
-
-    public  LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha( LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public Persona getPersona() {
-        return persona;
-    }
-
-    public void setPersona(Persona persona) {
-        this.persona = persona;
     }
 }

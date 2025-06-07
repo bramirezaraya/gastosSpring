@@ -3,9 +3,10 @@ package aprendiendo.spring.Models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 import java.time.LocalDate;
-
+@Data
 public class PrestadoDTO {
     @NotBlank(message = "El nombre no puede estar vacío")
     public String nombre;
@@ -28,46 +29,5 @@ public class PrestadoDTO {
     }
 
     public PrestadoDTO() {
-    }
-
-    public  String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre( String nombre) {
-        this.nombre = nombre;
-    }
-
-    public  Integer getIdPersona() {
-        return idPersona;
-    }
-
-    public void setIdPersona( Integer idPersona) {
-        this.idPersona = idPersona;
-    }
-
-
-    public double getDinero() {
-        return dinero;
-    }
-
-    public void setDinero( double dinero) {
-        this.dinero = dinero;
-    }
-
-    public LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha( LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public  String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion( String descripcion) {
-        this.descripcion = descripcion;
     }
 }

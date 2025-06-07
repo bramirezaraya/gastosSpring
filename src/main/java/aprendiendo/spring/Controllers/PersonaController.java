@@ -8,10 +8,12 @@ import aprendiendo.spring.Services.ServicioPerson;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +79,27 @@ public class PersonaController {
         responseSucess.setResult(true);
         responseSucess.setData(response.findValue("Persona"));
         return ResponseEntity.ok().body(responseSucess);
+    }
+
+    @GetMapping("/person/info")
+    public ResponseEntity<ResponseSucess> getInfoPerson(@RequestParam(required = false, defaultValue = "")
+                                                            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate fechaInicio,
+                                                        @RequestParam(required = false, defaultValue = "")
+                                                            @DateTimeFormat(pattern = "dd-MM-yyyy") LocalDate fechaFin,
+                                                        @RequestParam int idPersona) {
+        if(fechaInicio == null && fechaFin == null) {
+            fechaFin = LocalDate.now();
+            fechaInicio = fechaFin.minusDays(30);
+        }
+
+        ObjectNode response = servicioPerson.infoPerson(idPersona, fechaInicio, fechaFin);
+
+        ResponseSucess responseSucess = new ResponseSucess();
+        responseSucess.setData(response);
+        responseSucess.setStatus(new Status(200, "Consulta exitosa"));
+        responseSucess.setResult(true);
+        return ResponseEntity.ok().body(responseSucess);
+
     }
 
     public ResponseEntity<ResponseSucess> validateError(BindingResult result){

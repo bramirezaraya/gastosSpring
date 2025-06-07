@@ -5,9 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 import java.time.LocalDate;
-
+@Data
 @Entity
 public class Prestado {
 
@@ -37,53 +38,5 @@ public class Prestado {
     }
 
     public Prestado() {
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public double getDinero() {
-        return dinero;
-    }
-
-    public void setDinero(double dinero) {
-        this.dinero = dinero;
-    }
-
-    public String getNombre() {
-        return nombre;
-    }
-
-    public void setNombre( String nombre) {
-        this.nombre = nombre;
-    }
-
-    public  LocalDate getFecha() {
-        return fecha;
-    }
-
-    public void setFecha( LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public  Persona getPersona() {
-        return persona;
-    }
-
-    public void setPersona( Persona persona) {
-        this.persona = persona;
-    }
-
-    public String getDescripcion() {
-        return descripcion;
-    }
-
-    public void setDescripcion( String descripcion) {
-        this.descripcion = descripcion;
     }
 }

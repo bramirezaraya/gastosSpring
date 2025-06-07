@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestControllerAdvice
-public class ControllerAdvice {
+public class ControllerAdvice{
 
     @ExceptionHandler(value = RequestException.class)
     public ResponseEntity<ExeptionAdvice> HandlerException(RequestException e) {

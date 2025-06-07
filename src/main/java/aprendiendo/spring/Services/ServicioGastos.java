@@ -12,4 +12,7 @@ public interface ServicioGastos {
     ObjectNode updateGasto(Gastos gasto);
     ObjectNode deleteGasto(int id);
     ObjectNode getGastos(LocalDate fechaInicio, LocalDate fechaFin, int idPersona, int pageNumber, int size);
+    ObjectNode gastosPorCategoria(int idPersona, LocalDate fechaInicio, LocalDate fechaFin);
+    ObjectNode ultimosGastos(int idPersona);
+    ObjectNode gastosAhorrosPorMes(int idPersona, int year);
 }

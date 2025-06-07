@@ -1,5 +1,8 @@
 package aprendiendo.spring.Models;
 
+import lombok.Data;
+
+@Data
 public class CategoriaTotal {
 
     private String categoria;
@@ -13,19 +16,4 @@ public class CategoriaTotal {
         this.total = total;
     }
 
-    public String getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(long total) {
-        this.total = total;
-    }
 }

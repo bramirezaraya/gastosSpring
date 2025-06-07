@@ -16,6 +16,7 @@ public interface GastosRepository extends JpaRepository<Gastos, Integer> {
 //    @Query("SELECT g FROM Gastos g WHERE g.idPersona = :idPersona order by g.fecha")
 //    List<Gastos> findByIdPersona(int idPersona);
     Page<Gastos> findByPersonaOrderByFecha(Persona persona, Pageable pageable);
+    Page<Gastos> findByPersonaOrderByFechaDesc(Persona persona, Pageable pageable);
     List<Gastos> findByPersona(Persona persona);
     Page<Gastos> findByFechaBetweenAndPersonaOrderByFecha(LocalDate fechaInicio, LocalDate fechaFin, Persona persona, Pageable pageable);
     List<Gastos> findByFechaBetweenAndPersona(LocalDate fechaInicio, LocalDate fechaFin, Persona persona);

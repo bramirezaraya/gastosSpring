@@ -1,5 +1,8 @@
 package aprendiendo.spring.Models;
 
+import lombok.Data;
+
+@Data
 public class Status {
 
     public int codigo;
@@ -10,19 +13,4 @@ public class Status {
         this.mensaje = mensaje;
     }
 
-    public int getCodigo() {
-        return codigo;
-    }
-
-    public void setCodigo(int codigo) {
-        this.codigo = codigo;
-    }
-
-    public String getMensaje() {
-        return mensaje;
-    }
-
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
-    }
 }

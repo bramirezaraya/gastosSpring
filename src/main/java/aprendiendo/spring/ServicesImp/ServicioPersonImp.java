@@ -1,8 +1,12 @@
 package aprendiendo.spring.ServicesImp;
 
 import aprendiendo.spring.Exception.RequestException;
+import aprendiendo.spring.Models.Ahorros;
+import aprendiendo.spring.Models.Gastos;
 import aprendiendo.spring.Models.Persona;
 import aprendiendo.spring.Models.Username;
+import aprendiendo.spring.Repository.AhorroRepository;
+import aprendiendo.spring.Repository.GastosRepository;
 import aprendiendo.spring.Repository.PersonaRepository;
 import aprendiendo.spring.Services.ServicioPerson;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +29,10 @@ public class ServicioPersonImp implements ServicioPerson {
     private ObjectMapper objectMapper;
     @Autowired
     private PasswordEncoder password;
+    @Autowired
+    GastosRepository gastosRepository;
+    @Autowired
+    AhorroRepository ahorrosRepository;
 
     @Override
     public ObjectNode registerPerson(Persona person) {
@@ -107,5 +116,35 @@ public class ServicioPersonImp implements ServicioPerson {
         }
 
         return response;
+    }
+
+    @Override
+    public ObjectNode infoPerson(int id, LocalDate fechaInicio, LocalDate fechaFin) {
+
+        Optional<Persona> person = personaRepository.findById(id);
+        double totalGastos= 0;
+        double totalAhorros = 0;
+        ObjectNode response = objectMapper.createObjectNode();
+        if(!person.isPresent()){
+            throw new RequestException("Persona no encontrada", 401, false, HttpStatus.BAD_REQUEST);
+        }
+
+        List<Ahorros> ahorros = ahorrosRepository.findByFechaBetweenAndPersona(fechaInicio, fechaFin, person.get());
+        List<Gastos> gastos = gastosRepository.findByFechaBetweenAndPersona(fechaInicio, fechaFin, person.get());
+        totalGastos = gastos.stream().mapToDouble(Gastos::getPrecio).sum();
+        totalAhorros = ahorros.stream().mapToDouble(Ahorros::getMonto).sum();
+
+        response.put("gastos", createInfoObject("Gastos", totalGastos));
+        response.put("ahorros", createInfoObject("Ahorros", totalAhorros));
+        response.put("presupuesto", createInfoObject("Presupuesto", person.get().getPresupuesto()));
+        response.put("disponible", createInfoObject("Disponible", person.get().getPresupuesto() - (totalGastos + totalAhorros)));
+        return response;
+    }
+
+    private ObjectNode createInfoObject(String name, double amount) {
+        ObjectNode node = objectMapper.createObjectNode();
+        node.put("nombre", name);
+        node.put("monto", amount);
+        return node;
     }
 }
