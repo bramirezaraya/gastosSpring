@@ -9,6 +9,7 @@ import aprendiendo.spring.Repository.AhorroRepository;
 import aprendiendo.spring.Repository.GastosRepository;
 import aprendiendo.spring.Repository.PersonaRepository;
 import aprendiendo.spring.Services.ServicioPerson;
+import aprendiendo.spring.util.JwtService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class ServicioPersonImp implements ServicioPerson {
     GastosRepository gastosRepository;
     @Autowired
     AhorroRepository ahorrosRepository;
+    @Autowired
+    JwtService jwtService;
 
     @Override
     public ObjectNode registerPerson(Persona person) {
@@ -105,11 +108,15 @@ public class ServicioPersonImp implements ServicioPerson {
         ObjectNode response = objectMapper.createObjectNode();
         if(persona.isPresent()) {
             if(password.matches(user.getPassword(), persona.get().getPassword())) {
+                String token = jwtService.generateToken(user.getEmail());
                 response.put("message", "Usuario logeado correctamente");
                 response.put("status", 200);
-                response.put("Persona", objectMapper.valueToTree(persona.get()));
+                ObjectNode infoPerson = objectMapper.createObjectNode();
+                infoPerson.put("token", token);
+                infoPerson.put("info", objectMapper.valueToTree(persona.get()));
+                response.put("Persona", infoPerson);
             } else {
-                throw new RequestException("Contraseña incorrecta", 404, false, HttpStatus.BAD_REQUEST);
+                throw new RequestException("Contraseña incorrecta", 404, false, HttpStatus.UNAUTHORIZED);
             }
         } else {
             throw new RequestException("Usuario no encontrada", 404, false, HttpStatus.BAD_REQUEST);

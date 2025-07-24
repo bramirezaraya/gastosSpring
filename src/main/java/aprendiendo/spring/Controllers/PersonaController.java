@@ -1,10 +1,9 @@
 package aprendiendo.spring.Controllers;
 
-import aprendiendo.spring.Models.Persona;
-import aprendiendo.spring.Models.ResponseSucess;
-import aprendiendo.spring.Models.Status;
-import aprendiendo.spring.Models.Username;
+import aprendiendo.spring.Models.*;
 import aprendiendo.spring.Services.ServicioPerson;
+import aprendiendo.spring.util.JwtService;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +22,8 @@ public class PersonaController {
 
     @Autowired
     private ServicioPerson servicioPerson;
+    @Autowired
+    JwtService jwtService;
 
     @GetMapping("/all")
     public ResponseEntity<ResponseSucess> findPeople(){
@@ -42,24 +43,18 @@ public class PersonaController {
         if (result.hasFieldErrors()) {
             return validateError(result);
         }
-            ObjectNode response = servicioPerson.registerPerson(body);
-            ResponseSucess responseSucess = new ResponseSucess();
-            responseSucess.setStatus(new Status(200, response.findValue("message").asText()));
-            responseSucess.setResult(true);
-            responseSucess.setData(response.findValue("persona"));
-            return ResponseEntity.ok().body(responseSucess);
+        ObjectNode response = servicioPerson.registerPerson(body);
+        ResponseSucess responseSucess = new ResponseSucess();
+        responseSucess.setStatus(new Status(200, response.findValue("message").asText()));
+        responseSucess.setResult(true);
+        responseSucess.setData(response.findValue("persona"));
+        return ResponseEntity.ok().body(responseSucess);
     }
 
     @PostMapping("/login")
     public ResponseEntity<ResponseSucess> loginPerson (@Valid @RequestBody Username user) {
         ResponseSucess response = new ResponseSucess();
         ObjectNode username = servicioPerson.loginPerson(user);
-
-//        if(username.findValue("status").asInt() == 404){
-//            response.setStatus(new Status(404, username.findValue("message").asText()));
-//            response.setResult(false);
-//            return ResponseEntity.badRequest().body(response);
-//        }
         response.setResult(true);
         response.setStatus(new Status(200, username.findValue("message").asText()));
         response.setData(username.findValue("Persona"));
@@ -100,6 +95,24 @@ public class PersonaController {
         responseSucess.setResult(true);
         return ResponseEntity.ok().body(responseSucess);
 
+    }
+    @PostMapping("/verifyToken")
+    public ResponseEntity<ResponseSucess> verifyToken(@RequestBody JsonNode dataToken) {
+        ResponseSucess responseSucess = new ResponseSucess();
+        if (dataToken.findValue("token").asText() == null ||  dataToken.findValue("token").asText().isEmpty()) {
+            responseSucess.setStatus(new Status(401, "Token no proporcionado"));
+            responseSucess.setResult(false);
+            return ResponseEntity.status(401).body(responseSucess);
+        }
+        TokenValidationResult tokenVerificado = jwtService.ValidateToken(dataToken.findValue("token").asText());
+        if(!tokenVerificado.isValido()) {
+            responseSucess.setStatus(new Status(401, tokenVerificado.getMensaje()));
+            responseSucess.setResult(false);
+            return ResponseEntity.status(401).body(responseSucess);
+        }
+        responseSucess.setStatus(new Status(200, "Token válido"));
+        responseSucess.setResult(true);
+        return ResponseEntity.ok().body(responseSucess);
     }
 
     public ResponseEntity<ResponseSucess> validateError(BindingResult result){
