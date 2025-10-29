@@ -144,7 +144,7 @@ public class servicioGastosImp implements ServicioGastos {
     @Override
     public ObjectNode gastosPorCategoria(int idPersona, LocalDate fechaInicio, LocalDate fechaFin) {
         ObjectNode response = objectMapper.createObjectNode();
-        List<Gastos> listaTotal = new ArrayList<>();
+        List<Gastos> listaTotal;
         List<CategoriaGasto> categorias = categoriaRepository.findAll();
         Optional<Persona> persona = personaRepository.findById(idPersona);
         if(persona.isPresent()){
@@ -164,7 +164,7 @@ public class servicioGastosImp implements ServicioGastos {
             double amount = 0;
             for (Gastos gasto : listaTotal) {
                 String categoriass = gasto.getCategoriaGasto().getNombre();
-                if(categoria.getNombre() == categoriass){
+                if(categoria.getNombre().equalsIgnoreCase(categoriass)){
                     amount += gasto.getPrecio();
                 }
             }
